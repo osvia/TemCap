@@ -180,11 +180,11 @@
           <b>B. Neighbor (object) captioning:</b>
           For each segment, LiDAR-based 3D detection and tracking models yield trajectories for surrounding agents. Only moving objects within a defined region in front of the host vehicle and visible to the front camera are retained. At each timestamp, objects are assigned:
           <br>
-          * a lane tag (left, right, host, oncoming, left/right-lateral),
+          • a lane tag (left, right, host, oncoming, left/right-lateral),
           <br>
-          * a motion tag (approaching, moving away, constant distance, stationary), and
+          • a motion tag (approaching, moving away, constant distance, stationary), and
           <br>
-          * an object tag (car, truck, bike, pedestrian).
+          • an object tag (car, truck, bike, pedestrian).
           <br><br>
           These tags form a time series that is compressed into a sequence of behavioral changes. Each unique state generates one sentence, enabling captions that naturally express transitions such as lane changes or shifts in motion. The first sentence introduces the object and the subsequent sentences describe how its behavior evolves over time.
           <br><br>
