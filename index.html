@@ -152,10 +152,16 @@
         </div>
 
 
-        <!-- Title Images Row (unchanged) -->
+        <!-- Title Images Row-->
         <div class="flex flex-wrap justify-center gap-2 mt-6">
-          <img src="./assets/images/figure1.png"  alt="Title image 1"
-              class="h-64 w-auto max-w-[100%] md:max-w-none rounded-lg shadow-sm">
+          <video
+            class="h-64 w-auto max-w-[100%] md:max-w-none rounded-lg shadow-sm"
+            src="./assets/videos/video1_faststart.mp4"
+            controls
+            playsinline
+          >
+            Your browser does not support the video tag.
+          </video>
         </div>
       </header>
       <!-- /HERO -->
@@ -165,38 +171,26 @@
       <section id="abstract" class="space-y-4 lg:max-w-6xl  lg:mx-auto">
         <h2 class="text-2xl font-semibold">Abstract</h2>
         <p>
-          We introduce a fully automated LiDAR‑based captioning pipeline that produces object‑level, temporally grounded descriptions of street‑scene videos directly from object tracks. The captions encode lane position, motion relative to the host vehicle, and temporal transitions (e.g., lane changes). Such captions enable small and efficient video captioners like SwinBERT, trained on only the front‑camera frames to learn richer temporal semantics. Across three datasets—our proprietary data, Waymo, and NuScenes—models trained with our captions demonstrate improved temporal reasoning and reduced dependence on static background cues. We quantify this reduction using our proposed Visual Bias Measure (VBM), which evaluates a model’s reliance on scene appearance versus motion-driven dynamics.
+          We introduce a fully automated LiDAR-based framework that generates temporally grounded object-level captions for driving scenes without human annotation. These captions provide strong temporal supervision for training video captioning models using only RGB front camera videos. Across multiple datasets, this LiDAR-driven supervision consistently improves temporal understanding, reduces visual bias, and generalizes robustly to unseen datasets and complex object behaviors, enabling scalable and temporally aware video understanding for autonomous driving.
         </p>
+
+        <div class="flex flex-wrap justify-center gap-2 mt-6">
+          <img src="./assets/images/figure1.png"  alt="Title image 1"
+              class="h-64 w-auto max-w-[100%] md:max-w-none rounded-lg shadow-sm">
+        </div>
       </section>
 
       <!-- METHOD OVERVIEW -->
       <section id="method" class="space-y-6 bg-gray-100 rounded-xl px-6 py-8 lg:max-w-6xl lg:mx-auto">
         <h2 class="text-2xl font-semibold">Method Overview</h2>
         <p>
-          Our captioning pipeline automatically converts LiDAR object tracks into rich, temporally grounded descriptions without any human annotation. The system uses a set of template sentences with placeholders that are filled using three types of attributes computed from LiDAR over time: lane position, motion relative to the host vehicle, and object type.
-          <br><br>
-          The procedure runs in two stages:
-          <br><br>
-          <b>A. Host-vehicle captioning:</b>
-          The host vehicle’s velocity and yaw-rate signals are analyzed to segment the video into short clips, each representing a single host action (e.g., “decelerating while steering left”). These segments receive a simple template-based host caption that provides context for interpreting other objects’ behaviors.
-          <br><br>
-          <b>B. Neighbor (object) captioning:</b>
-          For each segment, LiDAR-based 3D detection and tracking models yield trajectories for surrounding agents. Only moving objects within a defined region in front of the host vehicle and visible to the front camera are retained. At each timestamp, objects are assigned:
-          <br>
-          • a lane tag (left, right, host, oncoming, left/right-lateral),
-          <br>
-          • a motion tag (approaching, moving away, constant distance, stationary), and
-          <br>
-          • an object tag (car, truck, bike, pedestrian).
-          <br><br>
-          These tags form a time series that is compressed into a sequence of behavioral changes. Each unique state generates one sentence, enabling captions that naturally express transitions such as lane changes or shifts in motion. The first sentence introduces the object and the subsequent sentences describe how its behavior evolves over time.
-          <br><br>
-          The combinatorial template system supports thousands of distinct captions, allowing scalable generation of detailed, multi-sentence object-level descriptions directly from raw LiDAR data.
-        </p>
-        <div class="grid md:grid-cols-1 gap-x-6 gap-y-8">
-          <!-- Column 1: nd‑to‑end data → caption → training pipeline -->
+          <b>LiDAR-based caption generation:</b> We introduce a fully automated LiDAR-driven framework that generates temporally grounded traffic scene descriptions without human annotation. LiDAR-based object tracking is used to capture the evolving behavior of the host vehicle and surrounding objects.
+
+          <br><b>1. Host caption:</b> Driving sequences are segmented into short clips based on the host vehicle’s motion, and each clip is assigned a brief, template-based caption describing the host behavior.
+          <br><b>2. Neighbor caption:</b> For each clip, tracked surrounding objects are described using their relative position, motion, and object type. Temporal changes are summarized into concise, multi-sentence captions that express object behaviors and transitions.
+          <br><br><b>Video Captioning Model training:</b> The automatically generated LiDAR captions are used to train SwinBERT, a compact video captioning transformer that operates solely on front-camera RGB frames, following the masked language modeling (MLM) training strategy.
+          
           <div class="space-y-3">
-            <h3 class="text-xl font-semibold mb-3 text-center">Video captioning model</h3>
             <figure class="rounded-lg overflow-hidden shadow-sm">
               <img src="./assets/images/method_image0.png" 
                   alt="method_image0" 
@@ -204,41 +198,17 @@
                   class="w-full h-auto object-cover">
             </figure>
           </div>
-          <p>
-            The LiDAR-generated captions are used to train SwinBERT, a compact video-captioning transformer that operates solely on front-camera RGB frames. Training follows the masked-language modeling (MLM) strategy from the original SwinBERT design, with the model learning to predict the LiDAR-derived object-level captions from uniformly sampled frames per video clip.
-          </p>
 
-          <!-- Column 2: LiDAR‑to‑mask projection (convex hull) -->
+          <br><b>LiDAR-based object masks:</b> An automated LiDAR-based masking step projects tracked 3D objects into the camera view to create object-specific pixel masks, reducing background bias and strengthening temporal grounding.
+        
           <div class="space-y-3">
-            <h3 class="text-xl font-semibold mb-3 text-center">Object Mask generation (optional step)</h3>
-            <figure class="rounded-lg overflow-hidden shadow-sm max-w-xl mx-auto">
+            <figure class="rounded-lg overflow-hidden shadow-sm">
               <img src="./assets/images/method_image1.png" 
-                  alt="method_image1" 
+                  alt="method_image0" 
                   loading="lazy" 
                   class="w-full h-auto object-cover">
             </figure>
           </div>
-          <p>
-            To further reduce reliance on background appearance and strengthen temporal grounding, the pipeline introduces an automated LiDAR-based object masking step. For each tracked object:
-            <br><br>
-            <b>A. 3D point selection:</b> LiDAR points inside the object’s 3D bounding box are extracted.
-            <br><b>B. Projection:</b> These points are projected into the front-camera image using calibrated LiDAR-to-camera transforms.
-            <br><b>C. Mask construction:</b> A tight convex hull is computed over the projected points (via the monotone-chain algorithm) and rasterized to create a clean object-specific pixel mask.
-            <br><br>
-            The resulting masks highlight the exact object referenced by the caption and suppress irrelevant background context, improving the model’s ability to learn dynamics rather than visual bias.
-          </p>
-        </div>
-      </section>
-
-      <!-- Key Contributions and Results -->
-      <section id="contributions" class="space-y-6 bg-gray-100 rounded-xl px-6 py-8 lg:max-w-6xl lg:mx-auto">
-        <h2 class="text-2xl font-semibold">Key Contributions and Results</h2>
-        <p>
-          • Scalable, generic captioning from LiDAR for temporally rich, object‑level descriptions without human labels.
-          <br>• Temporal understanding beats strong baselines on captioning and retrieval across seen and unseen datasets.
-          <br>• Visual Bias Measure (VBM), simple BLEU‑based metric, that quantifies reliance on static visual similarity. Training with our temporal captions consistently lowers VBM.
-          <br>• Mask‑augmented training further improves generalization by directing attention to the object of interest, better temporal grounding between caption and the associated object.
-
         </p>
       </section>
       
@@ -252,10 +222,10 @@
           <!-- Explanatory text -->
           <div class="space-y-3 mb-4 min-[1360px]:mb-0 min-[1360px]:w-1/3">
               <h3 class="font-semibold text-lg">
-                Captioning Quality (BLEU4 / CIDEr / SPICE)
+                Captioning performance
               </h3>
               <p class="text-sm leading-relaxed">
-                Trained solely on single-sentence captions from our proprietary dataset, the model generalizes well to both Waymo and NuScenes. It outperforms InternVideo, ViCLIP, and CLIP, even though those baselines face the easier task of selecting from predefined candidate captions.
+                Our model outperforms all baselines by a large margin, achieving up to 3× higher BLEU-4 and CIDEr on the proprietary dataset and 1.6–2× gains on Waymo and NuScenes, demonstrating strong generalization and superior temporal understanding.
               </p>
           </div>
       
@@ -265,20 +235,17 @@
           </div>
           </div>
       
-        <!-- ── Visual Bias Measure (VBM) ─────────────────────────────────── -->
+        <!-- ── Temporal Understanding. ─────────────────────────────────── -->
           <div
               class="flex flex-col min-[1360px]:flex-row min-[1360px]:items-start min-[1360px]:gap-8">
               <!-- Explanatory text -->
               <div
                   class="space-y-3 mb-4 min-[1360px]:mb-0 min-[1360px]:w-1/3">
                   <h3 class="font-semibold text-lg">
-                    Visual Bias Measure (VBM)
+                    Temporal Understanding
                   </h3>
                   <p class="text-sm leading-relaxed">
-                    VBM captures how much retrieval performance drops, measured using BLEU4, when visually similar videos are removed from the candidate 
-                    set in a video-to-video retrieval task. A <b>lower VBM</b> indicates that the model is less dependent on static scene appearance and relies 
-                    more on true temporal cues. Our training achieves the <b>lowest VBM across all datasets</b>, and adding mask-based augmentation further 
-                    reduces visual bias, lowering VBM by roughly <b>5 percentage points</b> on Waymo and <b>2 percentage points</b> on NuScenes.
+                    Visual Bias Measure (VBM), our custom metric, quantifies a model’s reliance on static visual cues by measuring performance drop when visually similar videos are excluded in a retrieval setup. Lower VBM indicates stronger temporal reasoning and reduced visual bias. Across all datasets, our model consistently achieves the lowest VBM, outperforming strong video and image baselines by a large margin and demonstrating superior temporal understanding and robust generalization beyond appearance-based cues.
                   </p>
               </div>
 
@@ -288,18 +255,17 @@
               </div>
           </div>
 
-        <!-- ── Zero‑Shot Generalization to Longer Captions ─────────────────────────────────── -->
+        <!-- ── Semantic-aware Embeddings ─────────────────────────────────── -->
         <div
         class="flex flex-col min-[1360px]:flex-row min-[1360px]:items-start min-[1360px]:gap-8">
         <!-- Explanatory text -->
         <div
             class="space-y-3 mb-4 min-[1360px]:mb-0 min-[1360px]:w-1/3">
             <h3 class="font-semibold text-lg">
-              Zero‑Shot Generalization to Longer Captions
+              Semantic-aware Embeddings
             </h3>
             <p class="text-sm leading-relaxed">
-              Despite training only on single‑sentence captions, our embeddings retrieve videos 
-              for <b>two‑sentence</b> captions (more complex maneuvers) with a <b>~20% higher</b> mean BLEU4 than the best baseline.
+              The UMAP visualization shows that our model learns a well-structured embedding space with clear and compact clusters corresponding to lane categories. Compared to the baseline, this improved separation indicates more effective encoding of lane semantics rather than reliance on low-level visual similarity.
             </p>
         </div>
 
@@ -307,19 +273,38 @@
         <div class="flex-1 overflow-x-auto">
             <img src="./assets/images/table3.png" alt="table3" class="chart-image w-full border rounded-md"/>
         </div>
-    </div>
+        </div>
+
+        <!-- ── Qualitative studies ─────────────────────────────────── -->
+          <div
+              class="flex flex-col min-[1360px]:flex-row min-[1360px]:items-start min-[1360px]:gap-8">
+              <!-- Explanatory text -->
+              <div
+                  class="space-y-3 mb-4 min-[1360px]:mb-0 min-[1360px]:w-1/3">
+                  <h3 class="font-semibold text-lg">
+                    Qualitative studies
+                  </h3>
+                  <p class="text-sm leading-relaxed">
+                    In video-to-video retrieval, our model prioritizes action consistency over visual similarity, while ViCLIP relies more heavily on static appearance cues.
+                  </p>
+              </div>
+
+              <!-- Chart -->
+              <div class="flex-1 overflow-x-auto">
+                  <img src="./assets/images/table4.png" alt="table2" class="chart-image w-full border rounded-md"/>
+              </div>
+          </div>
 
       </section>
 
-      <!-- Broader Impact & Potential -->
-      <section id="impact" class="space-y-4 lg:max-w-6xl  lg:mx-auto">
-        <h2 class="text-2xl font-semibold">Broader Impact & Potential</h2>
+      <!-- Key Contributions-->
+      <section id="contributions" class="space-y-6 bg-gray-100 rounded-xl px-6 py-8 lg:max-w-6xl lg:mx-auto">
+        <h2 class="text-2xl font-semibold">Key Contributions</h2>
         <p>
-          • <b>Scaling data generation:</b> The trained video captioning model can be used to generate temporal object captions for camera-only dataset. Additionally, any LiDAR‑equipped dataset can be converted into rich temporal captioning dataset at low cost using out pseudo-labeling method.  
-          <br>
-          • <b>Beyond captioning:</b> The learned embeddings improve <b>video retrieval</b> by maneuvers and can aid <b>trajectory forecasting, risk reasoning, or behavior search</b> tools. 
-          <br>
-          • <b>Temporal understanding metric:</b> VBM, a metric to quantitaively evaluate temporal understanding capabilities of models. Lower VBM suggests robustness to background changes—useful for being agnostic to geographic and seasonal shifts.
+          1.Automated LiDAR-based captioning: A fully automated framework generates temporally grounded object-level captions directly from LiDAR data without human annotation.
+          <br>2.Temporal caption-supervised learning: Training video captioning models with LiDAR-generated captions improves temporal understanding and reduces visual bias, reflected by lower VBM.
+          <br>3.Enhanced generalization with object masks: LiDAR-based object masks further improve generalization by reducing reliance on background appearance and focusing learning on object dynamics.
+
         </p>
       </section>
 
