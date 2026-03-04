@@ -19,9 +19,8 @@
       <nav class="space-y-1">
         <a href="#abstract"   class="block hover:underline text-gray-700">Abstract</a>
         <a href="#method"     class="block hover:underline text-gray-700">Method</a>
-        <a href="#contributions"    class="block hover:underline text-gray-700">Contributions</a>
         <a href="#metrics"    class="block hover:underline text-gray-700">Metrics</a>
-        <a href="#impact"    class="block hover:underline text-gray-700">Impact</a>
+        <a href="#contributions"    class="block hover:underline text-gray-700">Contributions</a>
         <a href="#resources"  class="block hover:underline text-gray-700">Resources</a>
         <a href="#acks"       class="block hover:underline text-gray-700">Acknowledgments</a>
         <a href="#citation"   class="block hover:underline text-gray-700">Citation</a>
@@ -51,9 +50,8 @@
       <nav class="space-y-2 mb-6 text-sm leading-relaxed">
         <a href="#abstract"   class="block hover:underline text-gray-700">Abstract</a>
         <a href="#method"     class="block hover:underline text-gray-700">Method</a>
-        <a href="#contributions"    class="block hover:underline text-gray-700">Contributions</a>
         <a href="#metrics"    class="block hover:underline text-gray-700">Metrics</a>
-        <a href="#impact"    class="block hover:underline text-gray-700">Impact</a>
+        <a href="#contributions"    class="block hover:underline text-gray-700">Contributions</a>
         <a href="#resources"  class="block hover:underline text-gray-700">Resources</a>
         <a href="#acks"       class="block hover:underline text-gray-700">Acknowledgments</a>
         <a href="#citation"   class="block hover:underline text-gray-700">Citation</a>
@@ -186,7 +184,7 @@
         <p>
           <b>LiDAR-based caption generation:</b> We introduce a fully automated LiDAR-driven framework that generates temporally grounded traffic scene descriptions without human annotation. LiDAR-based object tracking is used to capture the evolving behavior of the host vehicle and surrounding objects.
 
-          <br><b>1. Host caption:</b> Driving sequences are segmented into short clips based on the host vehicle’s motion, and each clip is assigned a brief, template-based caption describing the host behavior.
+          <br><br><b>1. Host caption:</b> Driving sequences are segmented into short clips based on the host vehicle’s motion, and each clip is assigned a brief, template-based caption describing the host behavior.
           <br><b>2. Neighbor caption:</b> For each clip, tracked surrounding objects are described using their relative position, motion, and object type. Temporal changes are summarized into concise, multi-sentence captions that express object behaviors and transitions.
           <br><br><b>Video Captioning Model training:</b> The automatically generated LiDAR captions are used to train SwinBERT, a compact video captioning transformer that operates solely on front-camera RGB frames, following the masked language modeling (MLM) training strategy.
           
@@ -225,7 +223,7 @@
                 Captioning performance
               </h3>
               <p class="text-sm leading-relaxed">
-                Our model outperforms all baselines by a large margin, achieving up to 3× higher BLEU-4 and CIDEr on the proprietary dataset and 1.6–2× gains on Waymo and NuScenes, demonstrating strong generalization and superior temporal understanding.
+                Our model outperforms all baselines by a large margin, achieving up to <b>3× higher BLEU-4 and CIDEr</b> on the proprietary dataset and <b>1.6–2× gains</b> on Waymo and NuScenes, demonstrating strong generalization and superior temporal understanding.
               </p>
           </div>
       
@@ -301,9 +299,9 @@
       <section id="contributions" class="space-y-6 bg-gray-100 rounded-xl px-6 py-8 lg:max-w-6xl lg:mx-auto">
         <h2 class="text-2xl font-semibold">Key Contributions</h2>
         <p>
-          1.Automated LiDAR-based captioning: A fully automated framework generates temporally grounded object-level captions directly from LiDAR data without human annotation.
-          <br>2.Temporal caption-supervised learning: Training video captioning models with LiDAR-generated captions improves temporal understanding and reduces visual bias, reflected by lower VBM.
-          <br>3.Enhanced generalization with object masks: LiDAR-based object masks further improve generalization by reducing reliance on background appearance and focusing learning on object dynamics.
+          <b>1.Automated LiDAR-based captioning:</b> A fully automated framework generates temporally grounded object-level captions directly from LiDAR data without human annotation.
+          <br><b>2.Temporal caption-supervised learning:</b> Training video captioning models with LiDAR-generated captions improves temporal understanding and reduces visual bias, reflected by lower VBM.
+          <br><b>3.Enhanced generalization with object masks:</b> LiDAR-based object masks further improve generalization by reducing reliance on background appearance and focusing learning on object dynamics.
 
         </p>
       </section>
